@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.liuwisdom.business.mall.mapper.MallProductTypeMapper">
+    <sql id="select">
+        select mall_product_type.id                mall_product_type_id,
+               mall_product_type.fk_dept_id        mall_product_type_fk_dept_id,
+               mall_product_type.dept_name         mall_product_type_dept_name,
+               mall_product_type.parent_id         mall_product_type_parent_id,
+               mall_product_type.description       mall_product_type_description,
+               mall_product_type.sort              mall_product_type_sort,
+               mall_product_type.create_by         mall_product_type_create_by,
+               mall_product_type.create_time       mall_product_type_create_time,
+               mall_product_type.last_update_by    mall_product_type_last_update_by,
+               mall_product_type.last_update_time  mall_product_type_last_update_time,
+               mall_product_type.remarks           mall_product_type_remarks,
+               mall_product_type.del_flag          mall_product_type_del_flag,
+               mall_product_type.fk_create_user_Id mall_product_type_fk_create_user_Id,
+               mall_product_type.fk_update_user_Id mall_product_type_fk_update_user_Id,
+               mall_product_type.name              mall_product_type_name,
+               mall_product.id                     mall_product_id,
+               mall_product.fk_dept_id             mall_product_fk_dept_id,
+               mall_product.dept_name              mall_product_dept_name,
+               mall_product.name                   mall_product_name,
+               mall_product.inventory              mall_product_inventory,
+               mall_product.status                 mall_product_status,
+               mall_product.price                  mall_product_price,
+               mall_product.is_credits_exchange    mall_product_is_credits_exchange,
+               mall_product.cover                  mall_product_cover,
+               mall_product.fk_type_id             mall_product_fk_type_id,
+               mall_product.type_name              mall_product_type_name,
+               mall_product.description            mall_product_description,
+               mall_product.sort                   mall_product_sort,
+               mall_product.create_by              mall_product_create_by,
+               mall_product.create_time            mall_product_create_time,
+               mall_product.last_update_by         mall_product_last_update_by,
+               mall_product.last_update_time       mall_product_last_update_time,
+               mall_product.remarks                mall_product_remarks,
+               mall_product.del_flag               mall_product_del_flag,
+               mall_product.fk_create_user_Id      mall_product_fk_create_user_Id,
+               mall_product.fk_update_user_Id      mall_product_fk_update_user_Id
+        from mall_product_type mall_product_type
+                 left join mall_product mall_product
+                           on mall_product.fk_type_id = mall_product_type.id and mall_product.del_flag = 0
+    </sql>
+    <sql id="selectIds">
+        select distinct mall_product_type.id mall_product_type_id
+        from mall_product_type mall_product_type
+                 left join mall_product mall_product
+                           on mall_product.fk_type_id = mall_product_type.id and mall_product.del_flag = 0
+    </sql>
+    <sql id="where">
+        where mall_product_type.del_flag = 0
+        <trim>
+            <if test="query.fkDeptId!=null and query.fkDeptId!=''">
+                and mall_product_type.fk_dept_id = #{query.fkDeptId}
+            </if>
+            <if test="query.deptName!=null and query.deptName!=''">
+                and mall_product_type.dept_name like concat('%',#{query.deptName},'%')
+            </if>
+            <if test="query.parentId!=null and query.parentId!=''">
+                and mall_product_type.parent_id = #{query.parentId}
+            </if>
+            <if test="query.description!=null and query.description!=''">
+                and mall_product_type.description like concat('%',#{query.description},'%')
+            </if>
+
+            <if test="query.productName!=null and query.productName!=''">
+                and mall_product.name = #{query.productName}
+            </if>
+            <if test="query.status!=null">
+                and mall_product.status = #{query.status}
+            </if>
+            <if test="query.isCreditsExchange!=null">
+                and mall_product.is_credits_exchange = #{query.isCreditsExchange}
+            </if>
+            <if test="query.ids!=null and query.ids.size()>0">
+                and mall_product_type.id in
+                <foreach collection="query.ids" separator="," item="id" open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </trim>
+    </sql>
+    <resultMap id="po" type="icu.liuwisdom.business.mall.vo.MallProductTypeVo">
+        <id property="id" column="mall_product_type_id"/>
+        <result property="fkDeptId" column="mall_product_type_fk_dept_id"/>
+        <result property="deptName" column="mall_product_type_dept_name"/>
+        <result property="parentId" column="mall_product_type_parent_id"/>
+        <result property="description" column="mall_product_type_description"/>
+        <result property="sort" column="mall_product_type_sort"/>
+        <result property="createBy" column="mall_product_type_create_by"/>
+        <result property="createTime" column="mall_product_type_create_time"/>
+        <result property="lastUpdateBy" column="mall_product_type_last_update_by"/>
+        <result property="lastUpdateTime" column="mall_product_type_last_update_time"/>
+        <result property="delFlag" column="mall_product_type_del_flag"/>
+        <result property="fkCreateUserId" column="mall_product_type_fk_create_user_Id"/>
+        <result property="fkUpdateUserId" column="mall_product_type_fk_update_user_Id"/>
+        <result property="name" column="mall_product_type_name"/>
+    </resultMap>
+    <resultMap id="vo" type="icu.liuwisdom.business.mall.vo.MallProductTypeVo" extends="po">
+        <collection property="products" ofType="icu.liuwisdom.business.mall.vo.MallProductVo">
+            <id property="id" column="mall_product_id"/>
+            <result property="fkDeptId" column="mall_product_fk_dept_id"/>
+            <result property="deptName" column="mall_product_dept_name"/>
+            <result property="name" column="mall_product_name"/>
+            <result property="inventory" column="mall_product_inventory"/>
+            <result property="status" column="mall_product_status"/>
+            <result property="price" column="mall_product_price"/>
+            <result property="isCreditsExchange" column="mall_product_is_credits_exchange"/>
+            <result property="cover" column="mall_product_cover"/>
+            <result property="fkTypeId" column="mall_product_fk_type_id"/>
+            <result property="typeName" column="mall_product_type_name"/>
+            <result property="description" column="mall_product_description"/>
+            <result property="sort" column="mall_product_sort"/>
+            <result property="createBy" column="mall_product_create_by"/>
+            <result property="createTime" column="mall_product_create_time"/>
+            <result property="lastUpdateBy" column="mall_product_last_update_by"/>
+            <result property="lastUpdateTime" column="mall_product_last_update_time"/>
+            <result property="delFlag" column="mall_product_del_flag"/>
+            <result property="fkCreateUserId" column="mall_product_fk_create_user_Id"/>
+            <result property="fkUpdateUserId" column="mall_product_fk_update_user_Id"/>
+        </collection>
+    </resultMap>
+    <!--分页查询-->
+    <select id="selectIds" resultType="java.lang.String">
+        <include refid="selectIds"/>
+        <include refid="where"/>
+    </select>
+    <select id="basePage" resultMap="vo">
+        <include refid="select"/>
+        <include refid="where"/>
+    </select>
+</mapper>

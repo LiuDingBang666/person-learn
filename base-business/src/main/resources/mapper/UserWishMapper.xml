@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.liuwisdom.business.mapper.UserWishMapper">
+    <sql id="select">
+        select user_wish.id                    user_wish_id,
+               user_wish.fk_user_id            user_wish_fk_user_id,
+               user_wish.name                  user_wish_name,
+               user_wish.content               user_wish_content,
+               user_wish.images                user_wish_images,
+               user_wish.is_selected           user_wish_is_selected,
+               user_wish.create_by             user_wish_create_by,
+               user_wish.create_time           user_wish_create_time,
+               user_wish.last_update_by        user_wish_last_update_by,
+               user_wish.last_update_time      user_wish_last_update_time,
+               user_wish.remarks               user_wish_remarks,
+               user_wish.del_flag              user_wish_del_flag,
+               user_wish.is_impl               user_wish_is_impl,
+               user_wish.is_publish            user_wish_is_publish,
+               user_wish_impl.id               user_wish_impl_id,
+               user_wish_impl.fk_user_id       user_wish_impl_fk_user_id,
+               user_wish_impl.user_name        user_wish_impl_user_name,
+               user_wish_impl.fk_wish_id       user_wish_impl_fk_wish_id,
+               user_wish_impl.desc             user_wish_impl_desc,
+               user_wish_impl.create_by        user_wish_impl_create_by,
+               user_wish_impl.create_time      user_wish_impl_create_time,
+               user_wish_impl.last_update_by   user_wish_impl_last_update_by,
+               user_wish_impl.last_update_time user_wish_impl_last_update_time,
+               user_wish_impl.remarks          user_wish_impl_remarks,
+               user_wish_impl.del_flag         user_wish_impl_del_flag
+        from user_wish user_wish
+                 left join user_wish_impl user_wish_impl
+                           on user_wish.id = user_wish_impl.fk_wish_id
+    </sql>
+    <sql id="selectIds">
+        select distinct user_wish.id user_wish_id
+        from user_wish user_wish
+                 left join user_wish_impl user_wish_impl
+                           on user_wish.id = user_wish_impl.fk_wish_id
+    </sql>
+    <sql id="where">
+        where user_wish.del_flag = 0
+        <trim>
+            <if test="query.fkUserId!=null and query.fkUserId!=''">
+                and user_wish.fkUserId=#{query.name}
+            </if>
+            <if test="query.name!=null and query.name!=''">
+                and user_wish.name like concat('%',#{query.name},'%')
+            </if>
+            <if test="query.content!=null and query.content!=''">
+                and user_wish.content like concat('%',#{content},'%')
+            </if>
+            <if test="query.isSelected!=null">
+                and user_wish.is_selected =${query.isSelected}
+            </if>
+            <if test="query.isImpl!=null">
+                and user_wish.is_impl =${isImpl}
+            </if>
+            <if test="query.isPublish!=null">
+                and user_wish.is_publish =${isPublish}
+            </if>
+            <if test="query.ids!=null and query.ids.size()>0">
+                and user_wish.user_wish_id in
+                <foreach collection="query.ids" separator="," item="id" open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </trim>
+    </sql>
+    <resultMap id="po" type="icu.liuwisdom.business.entity.UserWish">
+        <id property="id" column="user_wish_id"/>
+        <result property="fkUserId" column="user_wish_fk_user_id"/>
+        <result property="name" column="user_wish_name"/>
+        <result property="content" column="user_wish_content"/>
+        <result property="images" column="user_wish_images"/>
+        <result property="isSelected" column="user_wish_is_selected"/>
+        <result property="createBy" column="user_wish_create_by"/>
+        <result property="createTime" column="user_wish_create_time"/>
+        <result property="lastUpdateBy" column="user_wish_last_update_by"/>
+        <result property="lastUpdateTime" column="user_wish_last_update_time"/>
+        <result property="remarks" column="user_wish_remarks"/>
+        <result property="delFlag" column="user_wish_del_flag"/>
+        <result property="isImpl" column="user_wish_is_impl"/>
+        <result property="isPublish" column="user_wish_is_publish"/>
+    </resultMap>
+    <resultMap id="vo" type="icu.liuwisdom.business.vo.UserWishVo" extends="po">
+        <association property="wishImpl" javaType="icu.liuwisdom.business.entity.UserWishImpl">
+            <result property="id" column="user_wish_impl_id"/>
+            <result property="fkUserId" column="user_wish_impl_fk_user_id"/>
+            <result property="userName" column="user_wish_impl_user_name"/>
+            <result property="fkWishId" column="user_wish_impl_fk_wish_id"/>
+            <result property="desc" column="user_wish_impl_desc"/>
+            <result property="createBy" column="user_wish_impl_create_by"/>
+            <result property="createTime" column="user_wish_impl_create_time"/>
+            <result property="lastUpdateBy" column="user_wish_impl_last_update_by"/>
+            <result property="lastUpdateTime" column="user_wish_impl_last_update_time"/>
+            <result property="remarks" column="user_wish_impl_remarks"/>
+            <result property="delFlag" column="user_wish_impl_del_flag"/>
+        </association>
+    </resultMap>
+    <!--分页查询-->
+    <select id="selectIds" resultType="java.lang.String">
+        <include refid="selectIds"/>
+        <include refid="where"/>
+    </select>
+    <select id="basePage" resultMap="vo">
+        <include refid="select"/>
+        <include refid="where"/>
+    </select>
+    <select id="selectById" resultMap="vo">
+        <include refid="select"/>
+        where user_wish.id = #{id} and user_wish.del_flag = 0
+    </select>
+</mapper>

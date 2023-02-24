@@ -1,0 +1,45 @@
+# redis-cluster config
+version: '3.0'
+networks:
+  redis_cluster:
+    driver: bridge
+services:
+  # redis master
+  redis-master:
+    image: redis:6.2.8
+    restart: always
+    privileged: true
+    ports:
+      - "6379:6379"
+    volumes:
+      - "$PWD/redis/redis.conf:/etc/redis.conf"
+      - "$PWD/redis/data:/data"
+    networks:
+      - redis_cluster
+    command: [ "redis-server","/etc/redis.conf" ]
+  # redis cluster1
+  redis-cluster1:
+    image: redis:6.2.8
+    restart: always
+    privileged: true
+    ports:
+      - "8085:8085"
+    volumes:
+      - "$PWD/redis-slave1/redis.conf:/etc/redis.conf"
+      - "$PWD/redis-slave1/data:/data"
+    networks:
+      - redis_cluster
+    command: [ "redis-server","/etc/redis.conf" ]
+  # redis cluster2
+  redis-cluster2:
+    image: redis:6.2.8
+    restart: always
+    privileged: true
+    ports:
+      - "8086:8086"
+    volumes:
+      - "$PWD/redis-slave2/redis.conf:/etc/redis.conf"
+      - "$PWD/redis-slave2/data:/data"
+    networks:
+      - redis_cluster
+    command: [ "redis-server","/etc/redis.conf" ]

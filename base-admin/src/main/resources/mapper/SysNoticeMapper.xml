@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.liuwisdom.admin.mapper.SysNoticeMapper">
+    <sql id="select">
+        select sys_notice.id                     sys_notice_id,
+               sys_notice.title                  sys_notice_title,
+               sys_notice.content                sys_notice_content,
+               sys_notice.cover                  sys_notice_cover,
+               sys_notice.attachment             sys_notice_attachment,
+               sys_notice.status                 sys_notice_status,
+               sys_notice.type                   sys_notice_type,
+               sys_notice.read_num               sys_notice_read_num,
+               sys_notice.notice_range           sys_notice_range,
+               sys_notice.publish_time           sys_notice_publish_time,
+               sys_notice.create_by              sys_notice_create_by,
+               sys_notice.create_time            sys_notice_create_time,
+               sys_notice.last_update_by         sys_notice_last_update_by,
+               sys_notice.last_update_time       sys_notice_last_update_time,
+               sys_notice.remarks                sys_notice_remarks,
+               sys_notice.del_flag               sys_notice_del_flag,
+               sys_notice_range.id               sys_notice_range_id,
+               sys_notice_range.fk_notice_id     sys_notice_range_fk_notice_id,
+               sys_notice_range.fk_user_id       sys_notice_range_fk_user_id,
+               sys_notice_range.fk_dept_id       sys_notice_range_fk_dept_id,
+               sys_notice_range.notice_range     sys_notice_range_range,
+               sys_notice_range.create_by        sys_notice_range_create_by,
+               sys_notice_range.create_time      sys_notice_range_create_time,
+               sys_notice_range.last_update_by   sys_notice_range_last_update_by,
+               sys_notice_range.last_update_time sys_notice_range_last_update_time,
+               sys_notice_range.remarks          sys_notice_range_remarks
+        from sys_notice sys_notice
+                 left join
+             sys_notice_range sys_notice_range
+             on sys_notice.id = sys_notice_range.fk_notice_id
+    </sql>
+    <sql id="selectIds">
+        select distinct sys_notice.id sys_notice_id
+        from sys_notice sys_notice
+                 left join
+             sys_notice_range sys_notice_range
+             on sys_notice.id = sys_notice_range.fk_notice_id
+    </sql>
+    <sql id="where">
+        where sys_notice.del_flag = 0
+        <trim>
+            <if test="query.title!=null and query.title!=''">
+                and sys_notice.title like concat('%',#{query.title},'%')
+            </if>
+            <if test="query.content!=null and query.content!=''">
+                and sys_notice.content like concat('%',#{query.content},'%')
+            </if>
+            <if test="query.status!=null">
+                and sys_notice.status=#{query.status}
+            </if>
+            <if test="query.type!=null">
+                and sys_notice.type=#{query.type}
+            </if>
+            <if test="query.range!=null">
+                and sys_notice.notice_range=#{query.range}
+            </if>
+            <if test="query.publishTime!=null">
+                and sys_notice.publish_time=#{query.publishTime}
+            </if>
+            <if test="query.ids!=null and query.ids.size()>0">
+                and sys_notice.id in
+                <foreach collection="query.ids" separator="," item="id" open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </trim>
+    </sql>
+    <resultMap id="po" type="icu.liuwisdom.admin.entity.SysNotice">
+        <id property="id" column="sys_notice_id"/>
+        <result property="title" column="sys_notice_title"/>
+        <result property="content" column="sys_notice_content"/>
+        <result property="cover" column="sys_notice_cover"/>
+        <result property="readNum" column="sys_notice_read_num"/>
+        <result property="attachment" column="sys_notice_attachment"/>
+        <result property="status" column="sys_notice_status"/>
+        <result property="type" column="sys_notice_type"/>
+        <result property="noticeRange" column="sys_notice_range"/>
+        <result property="publishTime" column="sys_notice_publish_time"/>
+        <result property="createBy" column="sys_role_create_by"/>
+        <result property="createTime" column="sys_role_create_time"/>
+        <result property="lastUpdateBy" column="sys_role_last_update_by"/>
+        <result property="lastUpdateTime" column="sys_role_last_update_time"/>
+        <result property="delFlag" column="sys_role_del_flag"/>
+    </resultMap>
+    <resultMap id="vo" type="icu.liuwisdom.admin.vo.SysNoticeVo" extends="po">
+        <collection property="ranges" ofType="icu.liuwisdom.admin.entity.SysNoticeRange">
+            <id property="id" column="sys_notice_range_id"/>
+            <result property="id" column="sys_notice_range_id"/>
+            <result property="fkNoticeId" column="sys_notice_range_fk_notice_id"/>
+            <result property="fkUserId" column="sys_notice_range_fk_user_id"/>
+            <result property="fkDeptId" column="sys_notice_range_fk_dept_id"/>
+            <result property="noticeRange" column="sys_notice_range_range"/>
+            <result property="createBy" column="sys_notice_range_create_by"/>
+            <result property="createTime" column="sys_notice_range_create_time"/>
+            <result property="lastUpdateBy" column="sys_notice_range_last_update_by"/>
+            <result property="lastUpdateTime" column="sys_notice_range_last_update_time"/>
+            <result property="remarks" column="sys_notice_range_remarks"/>
+        </collection>
+    </resultMap>
+    <!--分页查询-->
+    <select id="selectIds" resultType="java.lang.String">
+        <include refid="selectIds"/>
+        <include refid="where"/>
+    </select>
+    <select id="basePage" resultMap="vo">
+        <include refid="select"/>
+        <include refid="where"/>
+    </select>
+    <select id="selectById" resultMap="vo">
+        <include refid="select"/>
+        where sys_notice.id = #{id} and sys_notice.del_flag = 0
+    </select>
+    <select id="page" resultMap="vo">
+        <include refid="select"/>
+        <include refid="where"/>
+    </select>
+</mapper>

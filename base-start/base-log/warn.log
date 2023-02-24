@@ -1,0 +1,1 @@
+2023-01-18 15:12:30.421 [main] WARN  springfox.documentation.spring.web.readers.parameter.ParameterDataTypeReader - Trying to infer dataType java.util.List<org.springframework.web.multipart.MultipartFile>

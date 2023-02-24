@@ -1,0 +1,6 @@
+2023-01-27 10:27:59.207 [main] INFO  icu.liuwisdom.start.BaseTest - Starting BaseTest on ldb with PID 15136 (started by LDB in D:\base\base\base-start)
+2023-01-27 10:27:59.261 [main] INFO  icu.liuwisdom.start.BaseTest - The following profiles are active: dev
+2023-01-27 10:28:33.437 [main] INFO  icu.liuwisdom.start.BaseTest - Starting BaseTest on ldb with PID 17448 (started by LDB in D:\base\base\base-start)
+2023-01-27 10:28:33.468 [main] INFO  icu.liuwisdom.start.BaseTest - The following profiles are active: dev
+2023-01-27 10:29:04.030 [main] INFO  icu.liuwisdom.start.BaseTest - Starting BaseTest on ldb with PID 12612 (started by LDB in D:\base\base\base-start)
+2023-01-27 10:29:04.045 [main] INFO  icu.liuwisdom.start.BaseTest - The following profiles are active: dev

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="icu.liuwisdom.business.mapper.LogRecordMapper">
+    <resultMap id="po" type="icu.liuwisdom.business.entity.LogRecord">
+        <id property="id" column="log_record_id"/>
+        <result property="fkUserId" column="log_record_fk_user_id"/>
+        <result property="title" column="log_record_title"/>
+        <result property="content" column="log_record_content"/>
+        <result property="isPublic" column="log_record_is_public"/>
+        <result property="images" column="log_record_images"/>
+        <result property="createBy" column="log_record_create_by"/>
+        <result property="createTime" column="log_record_create_time"/>
+        <result property="lastUpdateBy" column="log_record_last_update_by"/>
+        <result property="lastUpdateTime" column="log_record_last_update_time"/>
+    </resultMap>
+    <resultMap id="vo" type="icu.liuwisdom.business.vo.LogRecordVo" extends="po">
+        <collection property="messages" ofType="icu.liuwisdom.business.vo.LogRecordMessageVo">
+            <id property="id" column="log_record_message_id"/>
+            <result property="fkLogRecord" column="log_record_message_fk_log_record"/>
+            <result property="parentId" column="log_record_message_parent_id"/>
+            <result property="content" column="log_record_message_content"/>
+            <result property="createBy" column="log_record_message_create_by"/>
+            <result property="createTime" column="log_record_message_create_time"/>
+            <result property="lastUpdateBy" column="log_record_message_last_update_by"/>
+            <result property="lastUpdateTime" column="log_record_message_last_update_time"/>
+            <result property="remarks" column="log_record_message_remarks"/>
+            <result property="userImage" column="log_record_message_avatar"/>
+            <result property="userName" column="log_record_message_user_name"/>
+            <result property="parentUserName" column="log_record_message_parent_user_name"/>
+            <result property="fkCreateUserId" column="log_record_message_fk_create_user_Id"/>
+            <result property="fkUpdateUserId" column="log_record_message_fk_update_user_Id"/>
+        </collection>
+    </resultMap>
+    <select id="selectById" resultMap="vo">
+        select distinct log_record.id                        log_record_id,
+                        log_record.fk_user_id                log_record_fk_user_id,
+                        log_record.title                     log_record_title,
+                        log_record.content                   log_record_content,
+                        log_record.is_public                 log_record_is_public,
+                        log_record.images                    log_record_images,
+                        log_record.create_by                 log_record_create_by,
+                        log_record.create_time               log_record_create_time,
+                        log_record.last_update_by            log_record_last_update_by,
+                        log_record.last_update_time          log_record_last_update_time,
+                        log_record.remarks                   log_record_remarks,
+                        log_record.del_flag                  log_record_del_flag,
+                        log_record_message.id                log_record_message_id,
+                        log_record_message.fk_log_record     log_record_message_fk_log_record,
+                        log_record_message.parent_id         log_record_message_parent_id,
+                        log_record_message.content           log_record_message_content,
+                        log_record_message.create_by         log_record_message_create_by,
+                        log_record_message.create_time       log_record_message_create_time,
+                        log_record_message.last_update_by    log_record_message_last_update_by,
+                        log_record_message.last_update_time  log_record_message_last_update_time,
+                        log_record_message.remarks           log_record_message_remarks,
+                        log_record_message.fk_create_user_Id log_record_message_fk_create_user_Id,
+                        log_record_message.fk_update_user_Id log_record_message_fk_update_user_Id,
+                        sys_user.avatar                      log_record_message_avatar,
+                        sys_user.nick_name                   log_record_message_user_name,
+                        sys_user_parent.nick_name            log_record_message_parent_user_name
+        from log_record log_record
+                 left join log_record_message log_record_message
+                           on log_record.id = log_record_message.fk_log_record
+                 left join sys_user on sys_user.id = log_record_message.fk_create_user_id
+                 left join log_record_message log_record_message_parent
+                           on log_record_message_parent.id = log_record_message.parent_id
+                 left join sys_user sys_user_parent on sys_user.id = log_record_message_parent.fk_create_user_id
+        where log_record.id = #{id}
+          and log_record.del_flag = 0
+        order by log_record.create_time desc, log_record_message.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,77 @@
+# 环境配置
+spring:
+  profiles:
+    active: dev
+  # 设置文件最大可上传大小
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  # 数据源
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/learn?characterEncoding=utf8&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      initial-size: 50
+      max-active: 1000
+      max-wait: 6000
+      min-idle: 1
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    password:
+    database: 0
+    port: 6379
+  # email config
+  mail:
+    host: smtp.qq.com
+    password: efjvzsdhfrpiddag
+    userName: 2993442750@qq.com
+    port: 587
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          socketFactoryClass:
+            javax.net.ssl.SSLSocketFactory
+        debug: true
+# myabatis-plus 相关配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  mybatis-plus.configuration.map-underscore-to-camel-case: true
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: -1 # 逻辑已删除值(默认为 -1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+# 分页插件配置配置
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+  helper-dialect: mysql
+  page-size-zero: true
+# 接口路径配置
+server:
+  servlet:
+    context-path: /api
+  port: 8081
+# 备份配置
+admin:
+  backup:
+    datasource:
+      host: 127.0.0.1
+      username: root
+      password: root
+      database: learn
+# 生产环境配置
+product:
+
+
+
+
